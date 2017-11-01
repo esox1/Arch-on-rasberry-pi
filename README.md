@@ -1,38 +1,47 @@
 # Arch-on-rasberry-pi
 **How to install Arch linux on the rasp. pi without a screen or a keyboard using only a secure shell client.** 
+
 In this guide I am using a 8G Sdcard, pi3 & my archlinux latptop 
 
-1- first thing first, you want to connect your Sdcard into your adapter and then connect it your pc
+1- first thing first, you want to connect your Sdcard to your pc via a sdcard adapter or a usb.
 
-2- Run command `lsblk` to find the blocks of your Sdcard with the the assigned name. it will probably be called sdx  -- 'x' can be letters a or b
+2- Run command `lsblk` to find the parititions of your Sdcard with their assigned names. it will probably be memk. or sdx  -- 'x'  
+   can be letters a or b
 
-3- Once you know your Sdcard name, run the command `sudo fdisk -l /dev/sdb` it was sdb for my case.
+3- Once you know your Sdcard name, run the command `sudo fdisk -l /dev/sdb`. Where sdb is your SDcard parition name. it was sdb   
+   for my case.
 
-4- Type `o` to clear any existing partitions on the Sdcard, then `p` to list partitions, there should be no partitions left. Then type `n` for new partition, then `p` for primary, `1` to assign the first partition on the drive, then press `ENTER` to accept the default first sector, then type `+200M` for the last sector. We just dedicated a 200M for the first partition, which will be used as the boot partition.
+4- Type `o` to clear any existing partitions on the Sdcard, then `p` to list partitions, there should be no partitions left. Then               
+   type `n` for new partition, then `p` for primary, `1` to assign the first partition on the drive, then press `ENTER` to accept 
+   the default first sector, then type `+200M` for the last sector. We just dedicated a 200M for the first partition, which will 
+   be used as the boot partition.
 
-5- Type 't', for partition type, then type 'c' to set the first partition to type W95 FAT32(LBA).
+5- Type `t`, for partition type, then type `c` to set the first partition to type W95 FAT32(LBA).
 
-6- Type 'n', then 'p' for primary, '2' for the second partition on the drive, then press ENTER twice to accept the default first and last sector.
+6- Type `n` one more time, then `p` for primary, `2` to assign the second partition on the drive, then press `ENTER` twice to 
+   accept the default first and last sector.
 
-7- Write the partition table and exit by  type 'w'
+7- Write the partition table and exit by typing `w`
 
-6- Type 'n', then 'p' for primary, '2' for the second partition on the drive, then press ENTER twice to accept the default first and last sector.
+8- Type `lsblk`, you should have two partitions. **sdb1** with size **200M** & **sdb2** with the rest of the Sdcard size in my  
+   case it was **7.4G**
 
-7- Write the partition table and exit by  type 'w'.
+9- Now, we need to create and mount a filesystem on the Sdcard partitions. type `mkfs.vfat /dev/sdb1`. This will create a FAT32 
+   filesystem on our first partition (200M). We are going to have our boot files on that partition
 
-8- Type 'lsblk', you should have two partitions. "sdb1 with size 200M & sdb2   with the rest of the Sdcard size in my case ith was 7.4G"
+10- Type `mkdir -p ~/Desktop/pi3/{boot,root}` to create a boot and a root subfolders in pi3 in your Desktop. Or whichever 
+    directory you prefer.
 
-9- Now, we need to create and mount filesystem to Sdcard partitions. type 'mkfs.vfat /dev/sdb1'. This will create a FAT32 filesystem on our first partiiton (200M). We are going to have our boot files on that partition
+11- Type `mount /dev/sdb1 ~/Desktop/pi3/boot`. Type `mkfs.ext4 /dev/sdb2` to format your second partition. Type `mount /dev/sdb2/   
+~/Desktop/pi3/root/`
 
-10- Type 'mkdir -p ~/Desktop/pi3/{boot,root}' to create a boot and a root subfolders in pi3 in your Desktop.
+12- Now that we have our two partitions mounted in root and boot subfolders under pi3. lets download the image of arch linux. 
+    Type `cd ~/Downloads && wget http://os.archlinuxarm.org/os/ArchLinuxARM-rpi-2-latest.tar.gz` to download the image. Type `tar zxvf ~/Downloads/ArchLinuxARM-rpi-2-latest.tar.gz -C ~/Desktop/pi3/root/` to extract the contents of the image into your root 
+     folder
 
-11- Type 'mount /dev/sdb1 ~/Desktop/pi3/boot'. Type 'mkfs.ext4 /dev/sdb2' to format your second partition. Type 'mount /dev/sdb2/ ~/Desktop/pi3/root/'
+13- Next we are going to move the boot folder that is in the ~/Desktop/pi3/root/ to our boot partition. Type `mv ~/Desktop/pi3/root/boot/* ~/Desktop/pi3/boot/`
 
-12- Now that we have our two partitions mounted in root and boot under pi3. lets download the image to arch linux. Type 'cd ~/Downloads && wget http://os.archlinuxarm.org/os/ArchLinuxARM-rpi-2-latest.tar.gz' to download the image. Type 'tar zxvf ~/Downloads/ArchLinuxARM-rpi-2-latest.tar.gz -C ~/Desktop/pi3/root/' to extractr the contents of the image into your root folder
-
-13- NExt we are going to move the boot folder in the ~/Desktop/pi3/root/ to our boot partition. Type 'mv ~/Desktop/pi3/root/boot/* ~/Desktop/pi3/boot/'
-
-14- That's it. Let's unmount the root and boot paritions. Type 'umount ~/Desktop/pi3/'
+14- That's it. Let's unmount the root and boot paritions. Type `umount ~/Desktop/pi3/`
 
 15- In this step we need to connect ot our pi3 to configure arch. By the way our default username is alarm - password is alarm. The root password is root. To connect to pi3 board, use the hdmi and your usb keyboard and type root as the username and the password is root. By the way, I dont have a usb keyboard so I am going to ssh to the board and use my laptops keyboard to configure arch on pi3. To do that, first connect your pi board to your router using ethernet. Next we need to figure out the asssinged ip address by the router to the pi3. Type 'sudo nmap -sP 192.168.1.0/24' { to find your ip address type on linux type 'ifconfig' it should be next to inet}. Nmap outputs a lit of all the connected devices along with my pi3 assigned ip address
 
