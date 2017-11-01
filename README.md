@@ -1,14 +1,14 @@
 # Arch-on-rasberry-pi
-How to install Arch linux on the rasp. pi without a screen or a keyboard using only a secure shell client. 
-In this guide Im going to install archlinux on a 8G Sdcard using my archlinux primary latptop lol
+**How to install Arch linux on the rasp. pi without a screen or a keyboard using only a secure shell client.** 
+In this guide I am using a 8G Sdcard, pi3 & my archlinux latptop 
 
-1- fist thing first, you want to connect your Sdcard into your adapter and then connect it your pc
+1- first thing first, you want to connect your Sdcard into your adapter and then connect it your pc
 
-2- run command   'lsblk' to find the bloacks of your Sdcard with the its name. it will probably be callled sdx  -- 'x' can be letters a or b
+2- Run command `lsblk` to find the blocks of your Sdcard with the the assigned name. it will probably be called sdx  -- 'x' can be letters a or b
 
-3- once you know your Sdcard name run the command 'sudo fdisk -l /dev/sdb' it was sdb for my case.
+3- Once you know your Sdcard name, run the command `sudo fdisk -l /dev/sdb` it was sdb for my case.
 
-4- Type 'o' to clear any existing partitions on the Sdcard, then 'p' to list partitions, there should be no partitions left. Then type 'n' for new partition, then 'p' for primary, '1' for the first partition on the drive, then press ENTER to accept the default first sector, then type '+200M' for the last sector.
+4- Type `o` to clear any existing partitions on the Sdcard, then `p` to list partitions, there should be no partitions left. Then type `n` for new partition, then `p` for primary, `1` to assign the first partition on the drive, then press `ENTER` to accept the default first sector, then type `+200M` for the last sector. We just dedicated a 200M for the first partition, which will be used as the boot partition.
 
 5- Type 't', for partition type, then type 'c' to set the first partition to type W95 FAT32(LBA).
 
